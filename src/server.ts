@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 import moduleLoader from './services/module_loader';
 import db from './services/database';
@@ -14,12 +15,13 @@ const port = process.env.SERVER_PORT || 3000;
 const server = express();
 
 // Middelware
+server.use(cors());
 server.use(express.json());
 server.use(cookieParser());
 
 // Routes
 server.use('/install', InstallController);
-server.use('/authentication', AuthenticationController);
+server.use('/authenticate', AuthenticationController);
 server.use('/token', TokenController);
 server.use('/users', UserController);
 
