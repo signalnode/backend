@@ -14,8 +14,11 @@ export const createRefreshToken = (username: string) => {
 };
 
 export const validateAccessToken = (token: string) => {
-  const payload = jwt.verify(token, JWT_SECRET!);
-  return payload;
+  try {
+    return jwt.verify(token, JWT_SECRET!);
+  } catch (err) {
+    return;
+  }
 };
 
 export const checkTokenExpiry = (expiry: number, username: string) => {

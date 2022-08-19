@@ -37,17 +37,19 @@ router.get('/refresh', (req, res) => {
 });
 
 router.get('/validate', (req, res) => {
-  const accessToken = req.headers.authorization;
+  const accessToken = req.query['token'] as string | undefined;
 
-  if (!accessToken || accessToken.indexOf(' ') === -1) {
+  console.log(accessToken);
+
+  if (!accessToken) {
     res.sendStatus(400);
     return;
   }
+  const payload = validateAccessToken(accessToken);
 
-  const token = accessToken.split(' ')[1];
-  const payload = validateAccessToken(token);
+  if (!payload) return res.sendStatus(401);
 
-  res.json({ payload });
+  res.json(payload);
 });
 
 export default router;
