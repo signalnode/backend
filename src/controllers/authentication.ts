@@ -17,6 +17,8 @@ router.post('/', async (req, res) => {
   const accessToken = createAccessToken(username);
   const refreshToken = createRefreshToken(username);
 
+  await UserModel.update({ token: refreshToken }, { where: { username: user.getDataValue('username') } });
+
   res.json({ accessToken, refreshToken });
 });
 

@@ -7,6 +7,12 @@ import { createAccessToken, createRefreshToken } from '../services/token_helper'
 const router = express.Router();
 const { JWT_SECRET, JWT_EXPIRY } = process.env;
 
+router.get('/:id', async (req, res) => {
+  const user = await UserModel.findOne({ where: { id: req.params.id } });
+
+  res.json(user);
+});
+
 router.post('/create', async (req, res) => {
   const { username, password } = req.body;
 

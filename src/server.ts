@@ -6,10 +6,13 @@ import cors from 'cors';
 import moduleLoader from './services/module_loader';
 import db from './services/database';
 
+import auth from './middleware/authentication';
+
 import InstallController from './controllers/install';
 import AuthenticationController from './controllers/authentication';
-import TokenController from './controllers/token';
-import UserController from './controllers/users';
+import LogoutController from './controllers/logout';
+import RenewController from './controllers/renew';
+import UserController from './controllers/user';
 
 const port = process.env.SERVER_PORT || 3000;
 const server = express();
@@ -22,8 +25,9 @@ server.use(cookieParser());
 // Routes
 server.use('/install', InstallController);
 server.use('/authenticate', AuthenticationController);
-server.use('/token', TokenController);
-server.use('/users', UserController);
+server.use('/logout', LogoutController);
+server.use('/renew', RenewController);
+server.use('/user', auth, UserController);
 
 server.listen(port, async () => {
   console.log('Try to load addons...');
