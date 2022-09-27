@@ -1,6 +1,6 @@
 import express from 'express';
 import UserModel from '../models/user';
-import { createAccessToken, createRefreshToken } from '../services/token_helper';
+import { createTokens } from '../services/token_helper';
 
 const router = express.Router();
 
@@ -14,10 +14,7 @@ router.post('/', async (req, res) => {
     return;
   }
 
-  const accessToken = createAccessToken(username);
-  const refreshToken = createRefreshToken(username);
-
-  await UserModel.update({ token: refreshToken }, { where: { username: user.getDataValue('username') } });
+  const { accessToken, refreshToken } = await createTokens(username);
 
   res.json({ accessToken, refreshToken });
 });

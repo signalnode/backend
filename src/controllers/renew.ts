@@ -1,7 +1,7 @@
 import express from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import UserModel from '../models/user';
-import { createAccessToken, createRefreshToken } from '../services/token_helper';
+import { createTokens } from '../services/token_helper';
 
 const router = express.Router();
 const { JWT_SECRET } = process.env;
@@ -15,12 +15,9 @@ router.get('/', async (req, res) => {
     const payload = jwt.verify(authorization[1], JWT_SECRET!) as JwtPayload;
     const user = await UserModel.findOne({ where: { username: payload.username } });
 
-    if (!user || user.getDataValue('token') !== authorization[1]) return res.sendStatus(403);
+    if (!user || authorization[1] !== user.token) return res.sendStatus(403);
 
-    const accessToken = createAccessToken(user.getDataValue('username'));
-    const refreshToken = createRefreshToken(user.getDataValue('username'));
-
-    await user.update({ token: refreshToken });
+    const { accessToken, refreshToken } = await createTokens(payload.username);
 
     res.json({ accessToken, refreshToken });
   } catch (err) {

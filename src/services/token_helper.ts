@@ -1,17 +1,26 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { now } from 'sequelize/types/utils';
+import UserModel from '../models/user';
 
 const { JWT_SECRET, JWT_EXPIRY } = process.env;
 
-export const createAccessToken = (username: string) => {
+const createAccessToken = (username: string) => {
   const accessToken = jwt.sign({ username }, JWT_SECRET!, { algorithm: 'HS256', expiresIn: JWT_EXPIRY! });
 
   return accessToken;
 };
 
-export const createRefreshToken = (username: string) => {
+const createRefreshToken = (username: string) => {
   const refreshToken = jwt.sign({ username }, JWT_SECRET!, { algorithm: 'HS256' });
   return refreshToken;
+};
+
+export const createTokens = async (username: string) => {
+  const accessToken = createAccessToken(username);
+  const refreshToken = createRefreshToken(username);
+
+  await UserModel.update({ token: refreshToken }, { where: { username } });
+
+  return { accessToken, refreshToken };
 };
 
 export const validateToken = (token: string) => {
