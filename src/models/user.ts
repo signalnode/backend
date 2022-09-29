@@ -2,11 +2,10 @@ import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, 
 import db from '../services/database';
 
 interface UserModel extends Model<InferAttributes<UserModel>, InferCreationAttributes<UserModel>> {
-  // Some fields are optional when calling UserModel.create() or UserModel.build()
   id: CreationOptional<number>;
   username: string;
   password: string;
-  token: string;
+  token?: string;
 }
 
 const User = db.define<UserModel>('User', {

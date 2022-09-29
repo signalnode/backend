@@ -2,6 +2,7 @@ import express from 'express';
 import UserModel from '../models/user';
 import { createTokens } from '../services/token_helper';
 
+// No middelware applied here, so there is no token nor a user id
 const router = express.Router();
 
 router.post('/', async (req, res) => {
@@ -14,7 +15,7 @@ router.post('/', async (req, res) => {
     return;
   }
 
-  const { accessToken, refreshToken } = await createTokens(username);
+  const { accessToken, refreshToken } = await createTokens(user.id, user.username);
 
   res.json({ accessToken, refreshToken });
 });

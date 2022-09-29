@@ -1,5 +1,5 @@
 import express from 'express';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import UserModel from '../models/user';
 import { createTokens } from '../services/token_helper';
 
@@ -12,12 +12,13 @@ router.get('/', async (req, res) => {
   if (!authorization || authorization[0] !== 'Bearer' || !authorization[1]) return res.sendStatus(400);
 
   try {
-    const payload = jwt.verify(authorization[1], JWT_SECRET!) as JwtPayload;
-    const user = await UserModel.findOne({ where: { username: payload.username } });
+    jwt.verify(authorization[1], JWT_SECRET!);
+    // const user = await UserModel.findOne({ where: { username: payload.username } });
+    const user = await UserModel.findByPk(res.locals.userId);
 
     if (!user || authorization[1] !== user.token) return res.sendStatus(403);
 
-    const { accessToken, refreshToken } = await createTokens(payload.username);
+    const { accessToken, refreshToken } = await createTokens(user.id, user.username);
 
     res.json({ accessToken, refreshToken });
   } catch (err) {

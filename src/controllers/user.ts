@@ -1,10 +1,8 @@
 import express from 'express';
 import { UniqueConstraintError } from 'sequelize';
 import UserModel from '../models/user';
-import { createTokens } from '../services/token_helper';
 
 const router = express.Router();
-const { JWT_EXPIRY } = process.env;
 
 router.get('/:id', async (req, res) => {
   const user = await UserModel.findOne({ where: { id: req.params.id } });
@@ -12,21 +10,18 @@ router.get('/:id', async (req, res) => {
   res.json(user);
 });
 
-// TODO: Refactor this controller
 router.post('/create', async (req, res) => {
-  const { username, password } = req.body;
-  const { accessToken, refreshToken } = await createTokens(username);
+  const { username, password } = req.body as { username: string; password: string };
 
   try {
-    await UserModel.create({ username, password, token: refreshToken });
+    await UserModel.create({ username, password });
   } catch (err) {
     if (err instanceof UniqueConstraintError) {
-      res.sendStatus(403);
-      return;
+      return res.sendStatus(403);
     }
   }
 
-  res.end();
+  res.sendStatus(201);
 });
 
 export default router;

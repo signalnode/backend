@@ -3,8 +3,8 @@ import UserModel from '../models/user';
 
 const { JWT_SECRET, JWT_EXPIRY } = process.env;
 
-const createAccessToken = (username: string) => {
-  const accessToken = jwt.sign({ username }, JWT_SECRET!, { algorithm: 'HS256', expiresIn: JWT_EXPIRY! });
+const createAccessToken = (id: number, username: string) => {
+  const accessToken = jwt.sign({ id, username }, JWT_SECRET!, { algorithm: 'HS256', expiresIn: JWT_EXPIRY! });
 
   return accessToken;
 };
@@ -14,8 +14,8 @@ const createRefreshToken = (username: string) => {
   return refreshToken;
 };
 
-export const createTokens = async (username: string) => {
-  const accessToken = createAccessToken(username);
+export const createTokens = async (id: number, username: string) => {
+  const accessToken = createAccessToken(id, username);
   const refreshToken = createRefreshToken(username);
 
   await UserModel.update({ token: refreshToken }, { where: { username } });
@@ -28,11 +28,5 @@ export const validateToken = (token: string) => {
     return jwt.verify(token, JWT_SECRET!) as JwtPayload;
   } catch (err) {
     return;
-  }
-};
-
-export const checkTokenExpiry = (expiry: number, username: string) => {
-  if (expiry - Date.now() < 0) {
-    return { accessToken: createAccessToken(username), refreshToken: createRefreshToken(username) };
   }
 };
