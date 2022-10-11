@@ -9,14 +9,14 @@ const createAccessToken = (id: number, username: string) => {
   return accessToken;
 };
 
-const createRefreshToken = (username: string) => {
-  const refreshToken = jwt.sign({ username }, JWT_SECRET!, { algorithm: 'HS256' });
+const createRefreshToken = (id: number) => {
+  const refreshToken = jwt.sign({ id }, JWT_SECRET!, { algorithm: 'HS256' });
   return refreshToken;
 };
 
 export const createTokens = async (id: number, username: string) => {
   const accessToken = createAccessToken(id, username);
-  const refreshToken = createRefreshToken(username);
+  const refreshToken = createRefreshToken(id);
 
   await UserModel.update({ token: refreshToken }, { where: { username } });
 

@@ -1,0 +1,7 @@
+{
+  "addons": [
+    { "name": "Addon 1", "description": "Description for Addon 1", "version": "0.0.1", "author": "Dawosch", "wiki": "https://google.de", "installed": "false" },
+    { "name": "Addon 2", "description": "Description for Addon 2", "version": "0.0.2", "author": "Dawosch", "wiki": "https://google.de", "installed": "false" },
+    { "name": "Addon 3", "description": "Description for Addon 3", "version": "0.0.3", "author": "Dawosch", "wiki": "https://google.de", "installed": "false" }
+  ]
+}
