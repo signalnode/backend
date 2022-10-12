@@ -1,17 +1,16 @@
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import db from '../services/database';
 
-interface AddonModel extends Model<InferAttributes<AddonModel>, InferCreationAttributes<AddonModel>> {
+export interface AddonModel extends Model<InferAttributes<AddonModel>, InferCreationAttributes<AddonModel>> {
   id: CreationOptional<number>;
   name: string;
   description: string;
   version: string;
   author: string;
-  wiki: string;
-  installed: boolean;
+  wiki?: string;
 }
 
-const Addon = db.define<AddonModel>('Addon', {
+export const Addon = db.define<AddonModel>('Addon', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -38,11 +37,4 @@ const Addon = db.define<AddonModel>('Addon', {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  installed: {
-    type: DataTypes.BOOLEAN,
-    allowNull: false,
-    defaultValue: false,
-  },
 });
-
-export default Addon;

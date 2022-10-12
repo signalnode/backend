@@ -1,6 +1,6 @@
 import express from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import UserModel from '../models/user';
+import { User } from '../models/user';
 import { createTokens } from '../services/token_helper';
 import { RefreshToken } from '../types/homenode-token';
 
@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
 
   try {
     const payload = jwt.verify(authorization[1], JWT_SECRET!) as JwtPayload & RefreshToken;
-    const user = await UserModel.findByPk(payload.id);
+    const user = await User.findByPk(payload.id);
 
     if (!user || authorization[1] !== user.token) return res.sendStatus(403);
 

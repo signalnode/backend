@@ -1,20 +1,20 @@
 import express from 'express';
 import { UniqueConstraintError } from 'sequelize';
-import UserModel from '../models/user';
+import { User, UserModel } from '../models/user';
 
 const router = express.Router();
 
 router.get('/:id', async (req, res) => {
-  const user = await UserModel.findOne({ where: { id: req.params.id } });
+  const user = await User.findOne({ where: { id: req.params.id } });
 
   res.json(user);
 });
 
 router.post('/create', async (req, res) => {
-  const { username, password } = req.body as { username: string; password: string };
+  const { username, passphrase } = req.body as UserModel;
 
   try {
-    await UserModel.create({ username, password });
+    await User.create({ username, passphrase });
   } catch (err) {
     if (err instanceof UniqueConstraintError) {
       return res.sendStatus(403);
