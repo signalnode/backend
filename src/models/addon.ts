@@ -3,6 +3,7 @@ import db from '../services/database';
 
 export interface AddonModel extends Model<InferAttributes<AddonModel>, InferCreationAttributes<AddonModel>> {
   id: CreationOptional<number>;
+  uuid: string;
   name: string;
   description: string;
   version: string;
@@ -15,6 +16,10 @@ export const Addon = db.define<AddonModel>('Addon', {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
+  },
+  uuid: {
+    type: DataTypes.UUIDV4,
+    unique: true,
   },
   name: {
     type: DataTypes.STRING,
