@@ -9,6 +9,7 @@ export interface AddonModel extends Model<InferAttributes<AddonModel>, InferCrea
   version: string;
   author: string;
   wiki?: string;
+  config: object;
 }
 
 export const Addon = db.define<AddonModel>('Addon', {
@@ -18,7 +19,7 @@ export const Addon = db.define<AddonModel>('Addon', {
     primaryKey: true,
   },
   uuid: {
-    type: DataTypes.UUIDV4,
+    type: DataTypes.UUID,
     unique: true,
   },
   name: {
@@ -40,6 +41,10 @@ export const Addon = db.define<AddonModel>('Addon', {
   },
   wiki: {
     type: DataTypes.STRING,
+    allowNull: true,
+  },
+  config: {
+    type: DataTypes.JSON,
     allowNull: true,
   },
 });

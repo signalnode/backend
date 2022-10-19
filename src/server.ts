@@ -3,7 +3,6 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
-import moduleLoader from './services/module_loader';
 import db from './services/database';
 
 import { validateToken } from './middleware/authentication';
@@ -32,11 +31,10 @@ server.use('/users', validateToken, UserController);
 server.use('/addons', validateToken, AddonController);
 
 server.listen(port, async () => {
-  console.log('Try to load addons...');
-  await moduleLoader(__dirname);
-  console.log('... modules loaded');
-
   console.log(`Server is running on port ${port}`);
+
+  // installAddon('hello');
+  // deinstallAddon('hello');
 
   await db.authenticate();
 });
