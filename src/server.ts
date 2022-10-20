@@ -13,6 +13,8 @@ import LogoutController from './controllers/logout';
 import RenewController from './controllers/renew';
 import UserController from './controllers/user';
 import AddonController from './controllers/addon';
+import { Addon } from './models/addon';
+import ModuleManager from './services/module_manager';
 
 const port = process.env.SERVER_PORT || 3000;
 const server = express();
@@ -36,5 +38,14 @@ server.listen(port, async () => {
   // installAddon('hello');
   // deinstallAddon('hello');
 
-  await db.authenticate();
+  try {
+    await db.authenticate();
+    const addons = await Addon.findAll();
+
+    for (const addon of addons) {
+      ModuleManager.initialize(addon.name);
+    }
+  } catch (err) {
+    console.error(err);
+  }
 });

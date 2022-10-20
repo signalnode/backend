@@ -6,6 +6,7 @@ type Module = {
   name: string;
   setup: () => void;
   getDetails: () => AddonModel;
+  getSettings: () => object[];
 };
 
 type ModuleHandler = {
@@ -19,6 +20,10 @@ class ModuleManager {
     this.modulehandler = {};
   }
 
+  private load = async (name: string) => {
+    return await import(path.resolve('./', 'node_modules', name));
+  };
+
   public install = async (name: string) => {
     try {
       execSync(`npm link ${name}`, {
@@ -28,9 +33,10 @@ class ModuleManager {
 
       const module = await this.load(name);
       const details = module.getDetails();
+      const settings = module.getSettings();
       this.modulehandler[details.uuid] = module;
 
-      Addon.create(details);
+      Addon.create({ ...details, config: settings });
     } catch (err) {
       // TODO: Handle exception
     }
@@ -40,8 +46,9 @@ class ModuleManager {
     execSync(`npm remove ${name}`, { stdio: [0, 1, 2] });
   };
 
-  public load = async (name: string): Promise<Module> => {
-    return await import(path.resolve('./', 'node_modules', name));
+  public initialize = async (name: string) => {
+    const module = await this.load(name);
+    this.modulehandler[module.getDetails().uuid] = module;
   };
 
   public getModule = (uuid: string) => this.modulehandler[uuid];
