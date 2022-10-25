@@ -9,6 +9,13 @@ const config = {
   port: parseInt(process.env.DATABASE_PORT!),
 };
 
+// TODO: Implement better exception handling
+if (!config.host) throw new Error('DatabaseHostUndefined');
+if (!config.database) throw new Error('DatabaseDBUndefined');
+if (!config.user) throw new Error('DatabaseUserUndefined');
+if (!config.password) throw new Error('DatabasePasswordUndefined');
+if (!config.port) throw new Error('DatabasePortUndefined');
+
 const sequelize = new Sequelize(config.database, config.user, config.password, {
   host: config.host,
   dialect: 'postgres',

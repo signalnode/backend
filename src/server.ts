@@ -46,6 +46,11 @@ server.listen(port, async () => {
       ModuleManager.initialize(addon.name);
     }
   } catch (err) {
+    console.log('==============');
+
+    if (err instanceof Error) {
+      console.log(err.message);
+    }
     console.error(err);
   }
 });

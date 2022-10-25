@@ -1,25 +1,42 @@
 import express from 'express';
-import { Addon } from '../models/addon';
+import { Addon, AddonModel } from '../models/addon';
 import ModuleManager from '../services/module_manager';
+
+type AddonDTO = AddonModel & { error?: string };
 
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-  const addons = await Addon.findAll();
-  console.log('Modules:', ModuleManager.getAllModules());
+  const addons: AddonDTO[] = await Addon.findAll();
+
+  for (const addon of addons) {
+    console.log('ADDON:', addon);
+
+    for (const name in ModuleManager.getAllModules()) {
+      if (addon.name === name) {
+        continue;
+      }
+
+      addon.error = 'Failed to load addon';
+    }
+  }
 
   res.json(addons);
 });
 
-router.get('/:uuid', async (req, res) => {
-  const { uuid } = req.params;
-  const addon = await Addon.findOne({ where: { uuid } });
+router.get('/:name', async (req, res) => {
+  const { name } = req.params;
 
-  res.json({ ...addon, settings: ModuleManager.getModule(req.params.uuid).getSettings() });
+  const addon = await Addon.findOne({ where: { name } });
+  const module = ModuleManager.getModule(name);
+
+  if (!module) return res.sendStatus(404);
+
+  res.json({ ...addon, uiConfig: module.getUIConfig() });
 });
 
 router.get('/install/:name', async (req, res) => {
-  ModuleManager.install(req.params.name);
+  await ModuleManager.install(req.params.name);
   res.sendStatus(200);
 });
 
@@ -36,8 +53,12 @@ router.get('/:id/deinstall', async (req, res) => {
   res.sendStatus(200);
 });
 
-router.get('/:uuid/settings', async (req, res) => {
-  res.json(ModuleManager.getModule(req.params.uuid).getSettings());
+router.get('/:name/settings', async (req, res) => {
+  const module = ModuleManager.getModule(req.params.name);
+
+  if (!module) return res.sendStatus(404);
+
+  return res.json(module.getUIConfig());
 });
 
 router.post('/:name/config/save', async (req, res) => {

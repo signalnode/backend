@@ -1,27 +1,29 @@
 import { execSync } from 'child_process';
+import fs from 'fs';
 import path from 'path';
-import { Addon, AddonModel } from '../models/addon';
+import { Addon } from '../models/addon';
+import { HomeNodeModule } from '@homenode/types';
 
-type Module = {
+type PackageJson = {
   name: string;
-  setup: () => void;
-  getDetails: () => AddonModel;
-  getSettings: () => object[];
-};
-
-type ModuleHandler = {
-  [uuid: string]: Module;
+  description: string;
+  version: string;
+  author: string;
 };
 
 class ModuleManager {
-  private modulehandler: ModuleHandler;
+  private modules: (HomeNodeModule & { name: string })[];
 
   constructor() {
-    this.modulehandler = {};
+    this.modules = [];
   }
 
-  private load = async (name: string) => {
-    return await import(path.resolve('./', 'node_modules', name));
+  private load = async (name: string): Promise<HomeNodeModule> => {
+    return (await import(path.resolve('./', 'node_modules', name))).default;
+  };
+
+  private getDetails = (name: string): PackageJson => {
+    return JSON.parse(fs.readFileSync(path.resolve('./', 'node_modules', name, 'package.json'), { encoding: 'utf-8' }));
   };
 
   public install = async (name: string) => {
@@ -32,13 +34,14 @@ class ModuleManager {
       });
 
       const module = await this.load(name);
-      const details = module.getDetails();
-      const settings = module.getSettings();
-      this.modulehandler[details.uuid] = module;
+      const details = this.getDetails(name);
 
-      Addon.create({ ...details, config: settings });
+      this.modules.push({ ...module, name });
+
+      Addon.create({ ...details, disabled: false });
     } catch (err) {
       // TODO: Handle exception
+      console.log(err);
     }
   };
 
@@ -47,12 +50,17 @@ class ModuleManager {
   };
 
   public initialize = async (name: string) => {
-    const module = await this.load(name);
-    this.modulehandler[module.getDetails().uuid] = module;
+    try {
+      const module = await this.load(name);
+      this.modules.push({ ...module, name });
+      console.log(this.modules);
+    } catch {
+      // TODO: Module not found
+    }
   };
 
-  public getModule = (uuid: string) => this.modulehandler[uuid];
-  public getAllModules = () => this.modulehandler;
+  public getModule = (name: string) => this.modules.find((module) => module.name === name);
+  public getAllModules = () => this.modules;
 }
 
 export default new ModuleManager();

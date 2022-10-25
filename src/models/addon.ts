@@ -3,13 +3,13 @@ import db from '../services/database';
 
 export interface AddonModel extends Model<InferAttributes<AddonModel>, InferCreationAttributes<AddonModel>> {
   id: CreationOptional<number>;
-  uuid: string;
   name: string;
   description: string;
   version: string;
+  disabled: boolean;
   author: string;
   wiki?: string;
-  config: object;
+  config?: object;
 }
 
 export const Addon = db.define<AddonModel>('Addon', {
@@ -17,10 +17,6 @@ export const Addon = db.define<AddonModel>('Addon', {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
-  },
-  uuid: {
-    type: DataTypes.UUID,
-    unique: true,
   },
   name: {
     type: DataTypes.STRING,
@@ -33,6 +29,10 @@ export const Addon = db.define<AddonModel>('Addon', {
   },
   version: {
     type: DataTypes.STRING,
+    allowNull: false,
+  },
+  disabled: {
+    type: DataTypes.BOOLEAN,
     allowNull: false,
   },
   author: {

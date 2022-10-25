@@ -959,6 +959,10 @@
     "minimatch" "^3.1.2"
     "strip-json-comments" "^3.1.1"
 
+"@homenode/types@file:../homenode-types":
+  "resolved" "file:../homenode-types"
+  "version" "0.1.0"
+
 "@humanwhocodes/config-array@^0.10.5":
   "integrity" "sha512-U/piU+VwXZsIgwnl+N+nRK12jCpHdc3s0UAc6zc1+HUgiESJxClpvYao/x9JwaN7onNeVb7kTlxlAvuEoaJ3ig=="
   "resolved" "https://registry.npmjs.org/@humanwhocodes/config-array/-/config-array-0.10.6.tgz"
@@ -1099,6 +1103,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/bluebird@*":
+  "integrity" "sha512-g2qEd+zkfkTEudA2SrMAeAvY7CrFqtbsLILm2dT2VIeKTqMqVzcdfURlvu6FU3srRgbmXN1Srm94pg34EIehww=="
+  "resolved" "https://registry.npmjs.org/@types/bluebird/-/bluebird-3.5.37.tgz"
+  "version" "3.5.37"
+
 "@types/body-parser@*":
   "integrity" "sha512-ALYone6pm6QmwZoAgeyNksccT9Q4AWZQ6PvfwR37GT6r6FWUPguq6sUmNGSMV2Wr761oQoBxwGGa6DR5o1DC9g=="
   "resolved" "https://registry.npmjs.org/@types/body-parser/-/body-parser-1.19.2.tgz"
@@ -1111,6 +1120,13 @@
   "integrity" "sha512-cdeYyv4KWoEgpBISTxWvqYsVy444DOqehiF3fM3ne10AmJ62RSyNkUnxMJXHQWRQQX2eR94m5y1IZyDwBjV9FQ=="
   "resolved" "https://registry.npmjs.org/@types/connect/-/connect-3.4.35.tgz"
   "version" "3.4.35"
+  dependencies:
+    "@types/node" "*"
+
+"@types/continuation-local-storage@*":
+  "integrity" "sha512-OT32vCVMymU1JMPKDeY0lX3cduAr0Pm/VwIbxygMeDS4lRcv57qYXn9bMwBRcRnEpXKBb/r4xYaZCARTZllP0A=="
+  "resolved" "https://registry.npmjs.org/@types/continuation-local-storage/-/continuation-local-storage-3.2.4.tgz"
+  "version" "3.2.4"
   dependencies:
     "@types/node" "*"
 
@@ -1164,6 +1180,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/lodash@*":
+  "integrity" "sha512-eHcVlLXP0c2FlMPm56ITode2AgLMSa6aJ05JTTbYbI+7EMkCEE5qk2E41d5g2lCVTqRe0GnnRFurmlCsDODrPw=="
+  "resolved" "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.186.tgz"
+  "version" "4.14.186"
+
 "@types/mime@^1":
   "integrity" "sha512-YATxVxgRqNH6nHEIsvg6k2Boc1JHI9ZbH5iWFFv/MTkchz3b1ieGDa5T0a9RznNdI0KhVbdbWSN+KWWrQZRxTw=="
   "resolved" "https://registry.npmjs.org/@types/mime/-/mime-1.3.2.tgz"
@@ -1198,6 +1219,16 @@
   "resolved" "https://registry.npmjs.org/@types/range-parser/-/range-parser-1.2.4.tgz"
   "version" "1.2.4"
 
+"@types/sequelize@^4.28.14":
+  "integrity" "sha512-O8lTJ8YPVVaoY9xjduchDlo0MOS3w262pro2H1QMuFIo/kc/p1elP/UxLOTP2wcVO2cFd6Gvghg9ZSAiJi0GLA=="
+  "resolved" "https://registry.npmjs.org/@types/sequelize/-/sequelize-4.28.14.tgz"
+  "version" "4.28.14"
+  dependencies:
+    "@types/bluebird" "*"
+    "@types/continuation-local-storage" "*"
+    "@types/lodash" "*"
+    "@types/validator" "*"
+
 "@types/serve-static@*":
   "integrity" "sha512-nCkHGI4w7ZgAdNkrEu0bv+4xNV/XDqW+DydknebMOQwkpDGx8G+HTlj7R7ABI8i8nKxVw0wtKPi1D+lPOkh4YQ=="
   "resolved" "https://registry.npmjs.org/@types/serve-static/-/serve-static-1.13.10.tgz"
@@ -1215,6 +1246,11 @@
   "integrity" "sha512-7NQmHra/JILCd1QqpSzl8+mJRc8ZHz3uDm8YV1Ks9IhK0epEiTw8aIErbvH9PI+6XbqhyIQy3462nEsn7UVzjQ=="
   "resolved" "https://registry.npmjs.org/@types/strip-json-comments/-/strip-json-comments-0.0.30.tgz"
   "version" "0.0.30"
+
+"@types/validator@*":
+  "integrity" "sha512-HKayOBe2ThTcQykiycCQYf70Fvo0WaJEJdxxNjvX3D/mnC0IUAhMe6wsIb1wwthmjiqBAR3qGkEzHYx74MS2yw=="
+  "resolved" "https://registry.npmjs.org/@types/validator/-/validator-13.7.8.tgz"
+  "version" "13.7.8"
 
 "@types/validator@^13.7.1":
   "integrity" "sha512-uAaSWegu2lymY18l+s5nmcXu3sFeeTOl1zhSGoYzcr6T3wz1M+3OcW4UjfPhIhHGd13tIMRDsEpR+d8w/MexwQ=="
@@ -2224,10 +2260,6 @@
   "version" "1.0.3"
   dependencies:
     "function-bind" "^1.1.1"
-
-"homenode-solaredge@file:../addons/solaredge":
-  "resolved" "file:../addons/solaredge"
-  "version" "0.1.0"
 
 "http-errors@2.0.0":
   "integrity" "sha512-FtwrG/euBzaEjYeRqOgly7G0qviiXoJWnvEH2Z1plBdXgbyjv34pHTSb9zoeHMyDy33+DWy5Wt9Wo+TURtOYSQ=="
