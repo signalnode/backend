@@ -1,13 +1,13 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
-import { User, UserModel } from '../models/user';
+import { User } from '../models/user';
 import { createTokens } from '../services/token_helper';
 
 // No middelware applied here, so there is no token nor a user id
 const router = express.Router();
 
 router.post('/', async (req, res) => {
-  const { username, passphrase } = req.body as UserModel;
+  const { username, passphrase } = req.body as User;
 
   console.log(username);
   console.log(passphrase);

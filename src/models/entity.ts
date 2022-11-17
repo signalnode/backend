@@ -1,19 +1,18 @@
-import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
+import { Model, InferAttributes, InferCreationAttributes, CreationOptional, DataTypes, ForeignKey } from 'sequelize';
 import sequelize from '../services/database';
+import { Addon } from './addon';
 
-class Addon extends Model<InferAttributes<Addon>, InferCreationAttributes<Addon>> {
+class Entity extends Model<InferAttributes<Entity>, InferCreationAttributes<Entity>> {
   declare id: CreationOptional<number>;
   declare name: string;
   declare description: string;
-  declare version: string;
-  declare disabled: boolean;
-  declare author: string;
-  declare config?: object;
+  declare value: string | number;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
+  declare addonId: ForeignKey<Addon['id']>;
 }
 
-Addon.init(
+Entity.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -23,25 +22,12 @@ Addon.init(
     name: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
     },
     description: {
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    version: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    disabled: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-    },
-    author: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    config: {
+    value: {
       type: DataTypes.JSON,
       allowNull: true,
     },
@@ -50,8 +36,8 @@ Addon.init(
   },
   {
     sequelize,
-    tableName: 'addons',
+    tableName: 'entities',
   }
 );
 
-export { Addon };
+export { Entity };

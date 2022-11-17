@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { AccessToken } from '../types/homenode-token';
+import { AccessToken } from '../types/signalnode-token';
 
 const { JWT_SECRET } = process.env;
 

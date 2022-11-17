@@ -1,30 +1,41 @@
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
-import db from '../services/database';
+import sequelize from '../services/database';
 
-export interface UserModel extends Model<InferAttributes<UserModel>, InferCreationAttributes<UserModel>> {
-  id: CreationOptional<number>;
-  username: string;
-  passphrase: string;
-  token?: string;
+class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+  declare id: CreationOptional<number>;
+  declare username: string;
+  declare passphrase: string;
+  declare token?: string;
+  declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
 }
 
-export const User = db.define<UserModel>('User', {
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
+User.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    username: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    passphrase: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    token: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE,
   },
-  username: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true,
-  },
-  passphrase: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  token: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-});
+  {
+    sequelize,
+    tableName: 'users',
+  }
+);
+
+export { User };

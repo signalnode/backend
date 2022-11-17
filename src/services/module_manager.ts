@@ -1,8 +1,7 @@
+import { SignalNodeModule } from '@signalnode/types';
 import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import { Addon } from '../models/addon';
-import { HomeNodeModule } from '@homenode/types';
 
 type PackageJson = {
   name: string;
@@ -12,33 +11,33 @@ type PackageJson = {
 };
 
 class ModuleManager {
-  private modules: (HomeNodeModule & { name: string })[];
+  private modules: (SignalNodeModule<unknown, unknown> & { name: string })[];
 
   constructor() {
     this.modules = [];
   }
 
-  private load = async (name: string): Promise<HomeNodeModule> => {
+  private load = async (name: string): Promise<SignalNodeModule<unknown, string>> => {
     return (await import(path.resolve('./', 'node_modules', name))).default;
   };
 
-  private getDetails = (name: string): PackageJson => {
+  public getDetails = (name: string): PackageJson => {
     return JSON.parse(fs.readFileSync(path.resolve('./', 'node_modules', name, 'package.json'), { encoding: 'utf-8' }));
   };
 
   public install = async (name: string) => {
     try {
-      execSync(`npm link ${name}`, {
+      // TODO: Remove type linking for production
+      execSync(`npm link ${name} @signalnode/types`, {
         stdio: [0, 1, 2],
         // cwd: path.resolve('./', 'src', 'addons'),
       });
 
       const module = await this.load(name);
-      const details = this.getDetails(name);
 
       this.modules.push({ ...module, name });
 
-      Addon.create({ ...details, disabled: false });
+      return module;
     } catch (err) {
       // TODO: Handle exception
       console.log(err);
@@ -50,13 +49,11 @@ class ModuleManager {
   };
 
   public initialize = async (name: string) => {
-    try {
-      const module = await this.load(name);
-      this.modules.push({ ...module, name });
-      console.log(this.modules);
-    } catch {
-      // TODO: Module not found
-    }
+    const module = await this.load(name);
+    this.modules.push({ ...module, name });
+    console.log(this.modules);
+
+    return module;
   };
 
   public getModule = (name: string) => this.modules.find((module) => module.name === name);

@@ -3,7 +3,7 @@
     {
       "id": 1,
       "uuid": "cb026495-9ca2-453b-a747-3858b6b6aed6",
-      "name": "homenode-solaredge",
+      "name": "signalnode-solaredge",
       "description": "Description for Addon 1",
       "version": "0.0.1",
       "author": "Dawosch",

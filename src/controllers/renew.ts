@@ -2,7 +2,7 @@ import express from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { User } from '../models/user';
 import { createTokens } from '../services/token_helper';
-import { RefreshToken } from '../types/homenode-token';
+import { RefreshToken } from '../types/signalnode-token';
 
 const router = express.Router();
 const { JWT_SECRET } = process.env;

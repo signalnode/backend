@@ -1,6 +1,6 @@
 import express from 'express';
 import { UniqueConstraintError } from 'sequelize';
-import { User, UserModel } from '../models/user';
+import { User } from '../models/user';
 
 const router = express.Router();
 
@@ -11,7 +11,7 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/create', async (req, res) => {
-  const { username, passphrase } = req.body as UserModel;
+  const { username, passphrase } = req.body as User;
 
   try {
     await User.create({ username, passphrase });

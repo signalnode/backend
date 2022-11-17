@@ -1,11 +1,12 @@
 {
-  "name": "smart",
+  "name": "signalnode-backend",
   "version": "0.0.1",
   "main": "server.ts",
   "author": "Dawosch",
   "license": "MIT",
   "scripts": {
-    "insert": "tsnd ./test/insert_initial_data.ts",
+    "podman": "podman machine start && podman pod start database",
+    "database": "podman pod start database",
     "start": "tsnd ./src/server.ts"
   },
   "dependencies": {
@@ -14,6 +15,7 @@
     "cors": "^2.8.5",
     "express": "^4.18.1",
     "jsonwebtoken": "^8.5.1",
+    "node-cron": "^3.0.2",
     "pg": "^8.7.3",
     "sequelize": "^6.21.3"
   },
@@ -27,6 +29,7 @@
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/jsonwebtoken": "^8.5.8",
+    "@types/node-cron": "^3.0.5",
     "@types/pg": "^8.6.5",
     "@types/sequelize": "^4.28.14",
     "@typescript-eslint/eslint-plugin": "^5.38.1",
