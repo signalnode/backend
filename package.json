@@ -7,7 +7,7 @@
   "scripts": {
     "podman": "podman machine start && podman pod start database",
     "database": "podman pod start database",
-    "start": "tsnd ./src/server.ts"
+    "dev": "tsnd ./src/server.ts"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
