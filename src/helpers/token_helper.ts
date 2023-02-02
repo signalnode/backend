@@ -1,5 +1,4 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { User } from '../models/user';
 
 const { JWT_SECRET, JWT_EXPIRY } = process.env;
 
@@ -14,11 +13,9 @@ const createRefreshToken = (id: number) => {
   return refreshToken;
 };
 
-export const createTokens = async (id: number, username: string) => {
+export const createTokens = (id: number, username: string) => {
   const accessToken = createAccessToken(id, username);
   const refreshToken = createRefreshToken(id);
-
-  await User.update({ token: refreshToken }, { where: { username } });
 
   return { accessToken, refreshToken };
 };

@@ -1,57 +1,65 @@
 import express from 'express';
-import { Addon, updateEntityValues } from '../models/addon';
-import ModuleManager from '../services/module_manager';
-
-// type AddonDTO = typeof Addon & { error?: string };
+import { Addon } from '../models/addon.model';
+import { Property } from '../models/property.model';
+// import AddonManager from '../helpers/addon_manager';
+import { getAddon, getAddonDetails, installAddon, registerAddonTasks, registerPropertyTasks, stopTasks } from '../helpers/addon_helper';
 
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-  const addons = await Addon.findAll();
+  const addons = await Addon.find();
 
-  for (const addon of addons) {
-    for (const name in ModuleManager.getAllModules()) {
-      if (addon.name === name) {
-        continue;
-      }
+  // for (const addon of addons) {
+  //   for (const name in AddonManager.getAll()) {
+  //     if (addon.name === name) {
+  //       continue;
+  //     }
 
-      // addon.error = 'Failed to load addon';
-    }
-  }
+  //     // addon.error = 'Failed to load addon';
+  //   }
+  // }
 
   res.json(addons);
 });
 
 router.get('/:name', async (req, res) => {
   const { name } = req.params;
-  const addon = await Addon.findOne({ where: { name } });
-  const module = ModuleManager.getModule(name);
+  const dbAddon = await Addon.findOneBy({ name });
+  const npmAddon = await getAddon(name);
+  console.log(npmAddon);
 
-  if (!addon || !module) return res.sendStatus(404);
+  if (!dbAddon || !npmAddon) return res.sendStatus(404);
 
-  res.json({ ...addon.toJSON(), uiConfig: module.uiConfig });
+  res.json({ ...dbAddon, configLayout: npmAddon.configLayout });
 });
 
 router.post('/:name/config', async (req, res) => {
+  const { name } = req.params;
   const config = req.body;
-  await Addon.update({ config }, { where: { name: req.params.name } });
+  const addon = await Addon.findOneBy({ name });
+  if (addon) {
+    addon.config = config;
+    addon.save();
+  }
 
   res.sendStatus(200);
 });
 
 router.get('/:name/start', async (req, res) => {
   const { name } = req.params;
-  const addon = await Addon.findOne({ where: { name } });
-  const module = ModuleManager.getModule(name);
+  const dbAddon = await Addon.findOne({ where: { name } });
 
-  if (!addon || !module) {
-    return res.sendStatus(404);
+  if (dbAddon) {
+    const npmAddon = await getAddon(dbAddon.name);
+
+    // if (!dbAddon || !npmAddon) return res.sendStatus(404);
+
+    dbAddon.activated = true;
+    await dbAddon.save();
+    await npmAddon.start(dbAddon.config);
+    registerAddonTasks(dbAddon.name, npmAddon.tasks ?? [], dbAddon.config, true);
+    registerPropertyTasks(dbAddon.name, npmAddon.properties, dbAddon.config, true);
   }
-
-  addon.activated = true;
-  addon.save();
-  module.run(addon.config);
-  ModuleManager.registerJobs(addon, updateEntityValues);
 
   res.sendStatus(200);
 });
@@ -59,33 +67,38 @@ router.get('/:name/start', async (req, res) => {
 router.get('/:name/stop', async (req, res) => {
   const { name } = req.params;
   const addon = await Addon.findOne({ where: { name } });
-  const module = ModuleManager.getModule(name);
 
-  if (!addon || !module) {
-    return res.sendStatus(404);
-  }
+  if (!addon) return res.sendStatus(404);
 
   addon.activated = false;
   addon.save();
-  ModuleManager.stopJobs(addon.name);
+  // AddonManager.stopTasks(addon.name);
+  stopTasks(addon.name);
 
   res.sendStatus(200);
 });
 
 router.get('/:name/install', async (req, res) => {
   const { name } = req.params;
-  const module = await ModuleManager.install(name);
+  installAddon(name);
+  const addon = await getAddon(name);
+  const details = getAddonDetails(name);
 
-  if (!module) return res.sendStatus(404);
+  if (!addon || !details) return res.sendStatus(404);
 
-  const details = ModuleManager.getDetails(name);
-  await Addon.create({ ...details, activated: false, entities: module.entities });
+  await Addon.from({
+    ...details,
+    activated: false,
+    properties: addon.properties.map(({ name, description, value, unit, useHistory }) => Property.from({ name: name as string, description, value, unit, useHistory: useHistory })),
+  }).save();
 
   res.sendStatus(200);
 });
 
-router.get('/:id/deinstall', async (req, res) => {
-  await Addon.destroy({ where: { id: req.params.id } });
+router.get('/:name/deinstall', async (req, res) => {
+  const { name } = req.params;
+
+  await (await Addon.findOneBy({ name }))?.remove();
 
   res.sendStatus(200);
 });

@@ -3,7 +3,7 @@ import cors from 'cors';
 import 'dotenv/config';
 import express from 'express';
 
-import db from './services/database';
+import datasource from './models/datasource';
 
 import { validateToken } from './middleware/authentication';
 
@@ -13,8 +13,8 @@ import InstallController from './controllers/install';
 import LogoutController from './controllers/logout';
 import RenewController from './controllers/renew';
 import UserController from './controllers/user';
-import { Addon, updateEntityValues } from './models/addon';
-import ModuleManager from './services/module_manager';
+import { getAddon, registerAddonTasks, registerPropertyTasks } from './helpers/addon_helper';
+import { Addon } from './models/addon.model';
 
 const port = process.env.SERVER_PORT || 3000;
 const server = express();
@@ -36,15 +36,16 @@ server.listen(port, async () => {
   console.log(`Server is running on port ${port}`);
 
   try {
-    await db.authenticate();
+    await datasource.initialize();
 
-    const addons = await Addon.findAll();
+    const dbAddons = await Addon.find();
 
-    for (const addon of addons) {
-      const module = await ModuleManager.initialize(addon.name);
-      if (addon.activated) {
-        await module.run(addon.config);
-        await ModuleManager.registerJobs(addon, updateEntityValues);
+    for (const dbAddon of dbAddons) {
+      const npmAddon = await getAddon(dbAddon.name);
+      if (dbAddon.activated) {
+        await npmAddon.start(dbAddon.config);
+        registerAddonTasks(dbAddon.name, npmAddon.tasks ?? [], dbAddon.config, true);
+        registerPropertyTasks(dbAddon.name, npmAddon.properties, dbAddon.config, true);
       }
     }
   } catch (err) {
