@@ -1,5 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, BaseEntity, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { Addon } from './addon.model';
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Device } from '../device.model';
 import { History } from './history.model';
 
 @Entity()
@@ -37,10 +37,10 @@ export class Property extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => Addon, (addon) => addon.properties)
-  addon: Addon;
+  @ManyToOne(() => Device, (device) => device.properties)
+  device: Device;
 
-  @OneToMany(() => History, (history) => history.property, { cascade: true, nullable: true, eager: true })
+  @OneToMany(() => History, (history) => history.property, { cascade: true, nullable: true })
   history?: History[];
 
   public static from = ({

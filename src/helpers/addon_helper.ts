@@ -65,7 +65,7 @@ export const registerAddonTasks = (addonName: string, tasks: SignalNodeAddonTask
         const data = await task.run(config);
         Object.keys(data).forEach(async (key) => {
           const property = await Property.findOneBy({ name: key, addon: { name: addonName } });
-          if (property?.useHistory) property.history?.push(History.from({ value: property.value, unit: property.unit, property }));
+          if (property?.useHistory) History.from({ value: data[key], unit: property.unit, property }).save();
           property!.value = data[key];
           property!.save();
         });
