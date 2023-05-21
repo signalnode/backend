@@ -1,7 +1,7 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { Device } from '../device.model';
+import { Device } from './device.model';
 
-@Entity()
+@Entity({ name: 'integrations' })
 export class Integration extends BaseEntity {
   @PrimaryGeneratedColumn()
   public id: number;
@@ -15,47 +15,46 @@ export class Integration extends BaseEntity {
   @Column()
   version: string;
 
-  @Column({ type: 'simple-json' })
-  configSchema: object;
-
   @Column({ nullable: false })
   author: string;
 
-  @CreateDateColumn()
+  @Column({ type: 'simple-json' })
+  configSchema: object;
+
+  @Column({ name: 'use_foreign_properties' })
+  useForeignProperties: boolean;
+
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  @OneToMany(() => Device, (device) => device.integration, { cascade: true, eager: true })
+  @OneToMany(() => Device, (device) => device.integration)
   devices: Device[];
 
-  //   public static from = ({
-  //     name,
-  //     description,
-  //     version,
-  //     author,
-  //     activated,
-  //     config,
-  //     properties,
-  //   }: {
-  //     name: string;
-  //     description: string;
-  //     version: string;
-  //     author: string;
-  //     activated?: boolean;
-  //     config?: object;
-  //     properties: Property[];
-  //   }) => {
-  //     const addon = new Addon();
-  //     addon.name = name;
-  //     addon.description = description;
-  //     addon.version = version;
-  //     addon.author = author;
-  //     addon.activated = activated ?? false;
-  //     addon.config = config;
-  //     addon.properties = properties;
-
-  //     return addon;
-  //   };
+  public static from = ({
+    name,
+    description,
+    version,
+    author,
+    configSchema,
+    useForeignProperties,
+  }: {
+    name: string;
+    description: string;
+    version: string;
+    author: string;
+    configSchema: object;
+    useForeignProperties?: boolean;
+  }) => {
+    const integration = new Integration();
+    integration.name = name;
+    integration.description = description;
+    integration.version = version;
+    integration.author = author;
+    integration.configSchema = configSchema;
+    integration.useForeignProperties = useForeignProperties ?? false;
+    return integration;
+  };
 }

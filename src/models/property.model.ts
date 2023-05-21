@@ -1,18 +1,9 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { Device } from '../device.model';
+import { Device } from './device.model';
 import { History } from './history.model';
 
-@Entity()
+@Entity({ name: 'properties' })
 export class Property extends BaseEntity {
-  // public constructor(name: string, description: string, value: string | number | boolean, unit: string, useHistory?: boolean) {
-  //   super();
-  //   this.name = name;
-  //   this.description = description;
-  //   this.value = value;
-  //   this.unit = unit;
-  //   this.useHistory = useHistory ?? false;
-  // }
-
   @PrimaryGeneratedColumn()
   public id: number;
 
@@ -31,10 +22,10 @@ export class Property extends BaseEntity {
   @Column({ name: 'use_history' })
   useHistory: boolean;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
   @ManyToOne(() => Device, (device) => device.properties)

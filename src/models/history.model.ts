@@ -12,7 +12,7 @@ export class History extends BaseEntity {
   @Column()
   unit: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
   @ManyToOne(() => Property, (property) => property.history)
