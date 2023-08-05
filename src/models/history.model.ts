@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, BaseEntity, CreateDateColumn } from 'typeorm';
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Property } from './property.model';
 
 @Entity()
@@ -7,10 +7,7 @@ export class History extends BaseEntity {
   public id: number;
 
   @Column({ type: 'text' })
-  value: string | number | boolean;
-
-  @Column()
-  unit: string;
+  value: string;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
@@ -18,10 +15,9 @@ export class History extends BaseEntity {
   @ManyToOne(() => Property, (property) => property.history)
   property: Property;
 
-  public static from = ({ value, unit, property }: { value: string | number | boolean; unit: string; property: Property }) => {
+  public static from = ({ value, property }: { value: unknown; property: Property }) => {
     const history = new History();
-    history.value = value;
-    history.unit = unit;
+    history.value = value as string;
     history.property = property;
 
     return history;

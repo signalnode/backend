@@ -10,6 +10,10 @@ router.get('/', async (req, res) => {
   // This is only for dev
   try {
     await User.create({ username: 'dev', passphrase: bcrypt.hashSync('dev', 10) }).save();
+
+    await Card.from({ type: 'test' });
+
+    console.log('DB successfully initialized');
   } catch (e) {
     console.error(e);
   }
@@ -19,7 +23,7 @@ router.get('/', async (req, res) => {
 
 router.get('/card', async (req, res) => {
   const props = await Property.find();
-  await Card.from({ type: 'Chart', config: {}, properties: props }).save();
+  await Card.from({ type: 'Chart' }).save();
 
   res.sendStatus(200);
 });

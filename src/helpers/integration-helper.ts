@@ -1,12 +1,9 @@
-import { SignalNodeIntegration, SignalNodeAddonTask, SignalNodeProperty } from '@signalnode/types';
+import { SignalNodeAddonTask, SignalNodeIntegration, SignalNodeProperty } from '@signalnode/types';
 import { execSync } from 'child_process';
 import fs from 'fs';
-import cron from 'node-cron';
 import path from 'path';
-import { Property } from '../models/property.model';
-import { History } from '../models/history.model';
 import { PackageJson } from '../types/package-json';
-import TaskManager from './task_manager';
+import { getTasks } from './task_manager';
 
 export const installIntegration = async (name: string): Promise<SignalNodeIntegration<unknown, string> | undefined> => {
   try {
@@ -19,7 +16,7 @@ export const installIntegration = async (name: string): Promise<SignalNodeIntegr
     return await getIntegration(name);
   } catch (err) {
     // TODO: Handle exception
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -97,9 +94,9 @@ export const registerPropertyTasks = (addonName: string, properties: SignalNodeP
 };
 
 export const startTasks = (name: string) => {
-  TaskManager.get(name).forEach((task) => task.start());
+  getTasks(name).forEach((task) => task.start());
 };
 
 export const stopTasks = (name: string) => {
-  TaskManager.get(name).forEach((task) => task.stop());
+  getTasks(name).forEach((task) => task.stop());
 };

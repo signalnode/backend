@@ -1,7 +1,6 @@
 import express from 'express';
-import { Integration } from '../models/integration.model';
-import { getAddon, getAddonDetails, installAddon, registerAddonTasks, registerPropertyTasks, stopTasks } from '../helpers/addon_helper';
 import { getIntegrationDetails, installIntegration } from '../helpers/integration-helper';
+import { Integration } from '../models/integration.model';
 
 const router = express.Router();
 
@@ -29,7 +28,8 @@ router.get('/:name/install', async (req, res) => {
 
   await Integration.from({
     ...details,
-    configSchema: integration?.configLayout ?? {},
+    configSchema: integration?.configLayout,
+    properties: integration?.properties,
   }).save();
 
   res.sendStatus(200);

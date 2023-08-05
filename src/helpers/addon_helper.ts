@@ -17,7 +17,7 @@ export const installAddon = (name: string) => {
     });
   } catch (err) {
     // TODO: Handle exception
-    console.log(err);
+    console.error(err);
   }
 };
 

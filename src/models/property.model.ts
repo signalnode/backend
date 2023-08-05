@@ -1,4 +1,4 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { AfterLoad, BaseEntity, Column, CreateDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Device } from './device.model';
 import { History } from './history.model';
 
@@ -14,7 +14,10 @@ export class Property extends BaseEntity {
   description: string;
 
   @Column({ type: 'text' })
-  value: string | number | boolean;
+  value: string;
+
+  @Column({ type: 'text' })
+  type: string;
 
   @Column()
   unit: string;
@@ -28,8 +31,8 @@ export class Property extends BaseEntity {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  @ManyToOne(() => Device, (device) => device.properties)
-  device: Device;
+  @ManyToMany(() => Device, (device) => device.properties)
+  devices: Device[];
 
   @OneToMany(() => History, (history) => history.property, { cascade: true, nullable: true })
   history?: History[];
@@ -38,28 +41,27 @@ export class Property extends BaseEntity {
     name,
     description,
     value,
+    type,
     unit,
     useHistory,
-  }: {
+  }: // device,
+  {
     name: string;
     description: string;
-    value: string | number | boolean;
+    value: string;
+    type: string;
     unit: string;
     useHistory?: boolean;
+    // device: Device;
   }) => {
     const property = new Property();
     property.name = name;
     property.description = description;
     property.value = value;
+    property.type = type;
     property.unit = unit;
     property.useHistory = useHistory ?? false;
-
+    // property.device = device;
     return property;
   };
-
-  // public static updateValue = (property: Property, response: [unknown, string | number | boolean]) => {
-  //   if (property.useHistory) History.from({ value: property.value, unit: property.unit }).save();
-  //   property.value = response[1];
-  //   property.save(); // No need to wait for the response so no "await"
-  // };
 }

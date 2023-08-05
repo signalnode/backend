@@ -1,5 +1,5 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { Property } from './property.model';
+import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { CardConfig } from './card-config.model';
 
 @Entity()
 export class Card extends BaseEntity {
@@ -9,24 +9,19 @@ export class Card extends BaseEntity {
   @Column()
   type: string;
 
-  @Column({ type: 'simple-json' })
-  config: object; // TODO: Define object
-
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToMany(() => Property, { cascade: true })
-  @JoinTable()
-  properties: Property[];
+  @OneToMany(() => CardConfig, (config) => config.card)
+  configs?: CardConfig[];
 
-  public static from = ({ type, config, properties }: { type: string; config: object; properties: Property[] }) => {
+  public static from = ({ type, configs }: { type: string; configs?: CardConfig[] }) => {
     const card = new Card();
     card.type = type;
-    card.config = config;
-    card.properties = properties;
+    card.configs = configs;
     return card;
   };
 }

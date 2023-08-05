@@ -1,5 +1,7 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Device } from './device.model';
+import { Property } from './property.model';
+import { SignalNodeProperty } from '@signalnode/types';
 
 @Entity({ name: 'integrations' })
 export class Integration extends BaseEntity {
@@ -15,11 +17,14 @@ export class Integration extends BaseEntity {
   @Column()
   version: string;
 
-  @Column({ nullable: false })
+  @Column()
   author: string;
 
-  @Column({ type: 'simple-json' })
-  configSchema: object;
+  @Column({ type: 'simple-json', nullable: true })
+  configSchema?: object;
+
+  @Column({ type: 'simple-json', nullable: true })
+  properties?: SignalNodeProperty<unknown, string>[];
 
   @Column({ name: 'use_foreign_properties' })
   useForeignProperties: boolean;
@@ -39,13 +44,15 @@ export class Integration extends BaseEntity {
     version,
     author,
     configSchema,
+    properties,
     useForeignProperties,
   }: {
     name: string;
     description: string;
     version: string;
     author: string;
-    configSchema: object;
+    configSchema?: object;
+    properties?: SignalNodeProperty<unknown, string>[];
     useForeignProperties?: boolean;
   }) => {
     const integration = new Integration();
@@ -54,6 +61,7 @@ export class Integration extends BaseEntity {
     integration.version = version;
     integration.author = author;
     integration.configSchema = configSchema;
+    integration.properties = properties;
     integration.useForeignProperties = useForeignProperties ?? false;
     return integration;
   };

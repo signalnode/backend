@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Integration } from './integration.model';
 import { Property } from './property.model';
 
@@ -21,6 +21,9 @@ export class Device extends BaseEntity {
   public activated: boolean;
 
   @Column({ type: 'simple-json', nullable: true })
+  public configSchema?: object;
+
+  @Column({ type: 'simple-json', nullable: true })
   public config?: object;
 
   @CreateDateColumn({ name: 'created_at' })
@@ -29,12 +32,13 @@ export class Device extends BaseEntity {
   @UpdateDateColumn({ name: 'updated_at' })
   public updatedAt: Date;
 
-  @ManyToOne(() => Integration, (integration) => integration.devices, { cascade: true, eager: true })
+  @ManyToOne(() => Integration, (integration) => integration.devices)
+  @JoinColumn({ name: 'integration_id' })
   public integration: Integration;
 
-  @ManyToMany(() => Property)
+  @ManyToMany(() => Property, (property) => property.devices, { cascade: true })
   @JoinTable()
-  public properties: Property[];
+  public properties?: Property[];
 
   public static from = ({
     name,
@@ -42,23 +46,31 @@ export class Device extends BaseEntity {
     activated,
     config,
     integration,
-    properties,
   }: {
     name: string;
     description: string;
     activated?: boolean;
     config?: object;
     integration: Integration;
-    properties?: Property[];
   }) => {
     const device = new Device();
     device.uniqueId = randomUUID();
     device.name = name;
     device.description = description;
     device.activated = activated ?? false;
+    device.configSchema = integration.configSchema;
     device.config = config;
     device.integration = integration;
-    device.properties = properties ?? [];
+    device.properties = integration.properties?.map((property) =>
+      Property.from({
+        name: property.name,
+        description: property.description,
+        value: property.value.toString(),
+        type: typeof property.value,
+        unit: property.unit,
+        useHistory: property.useHistory,
+      })
+    );
     return device;
   };
 }

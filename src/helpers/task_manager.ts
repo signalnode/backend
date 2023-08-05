@@ -1,10 +1,6 @@
 import { ScheduledTask } from 'node-cron';
 
-class TaskManager {
-  private tasks: { [key: string]: ScheduledTask[] } = {};
+const tasks: { [key: string]: ScheduledTask[] } = {};
 
-  public add = (name: string, task: ScheduledTask) => (this.tasks[name] ? this.tasks[name].push(task) : (this.tasks[name] = [task]));
-  public get = (name: string) => this.tasks[name];
-}
-
-export default new TaskManager();
+export const addTask = (name: string, task: ScheduledTask) => (tasks[name] ? tasks[name].push(task) : (tasks[name] = [task]));
+export const getTasks = (name: string) => tasks[name];

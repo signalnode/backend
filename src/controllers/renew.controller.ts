@@ -24,7 +24,7 @@ router.get('/', async (req, res) => {
 
     res.json({ accessToken, refreshToken });
   } catch (err) {
-    console.log(err);
+    console.error(err);
 
     res.sendStatus(403);
   }
