@@ -26,7 +26,6 @@ const convertQueryToFilters: (query: ParsedQs | ParsedQs[] | string[]) => Parsed
     }
   }
   return Object.entries(query).reduce((acc, [key, value]) => {
-    console.log(key, value);
     if (Array.isArray(value)) return acc;
     if (key === 'not' && typeof value === 'string') {
       return Not(value);
@@ -74,7 +73,6 @@ export const convertQueryToOptions: (query: ParsedQs, options?: { relations?: Fi
     order = convertQueryToOrder(query['order'] as ParsedQs);
   }
 
-  console.log(query);
   if (options?.where) {
     where = options.where;
   } else {
@@ -85,8 +83,6 @@ export const convertQueryToOptions: (query: ParsedQs, options?: { relations?: Fi
       return acc;
     }, {});
   }
-
-  console.log(where);
 
   return { relations, order, where: Object.keys(where).length > 0 ? where : undefined };
 };

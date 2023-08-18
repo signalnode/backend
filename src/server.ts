@@ -1,7 +1,7 @@
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import 'dotenv/config';
-import express, { NextFunction, Request, Response } from 'express';
+import express from 'express';
 
 import datasource from './datasource';
 
@@ -61,9 +61,6 @@ server.listen(port, async () => {
     for (const device of devices) {
       const integration = await getIntegration(device.integration.name);
       if (device.activated) {
-        //         await npmAddon.start(dbAddon.config);
-        //         registerAddonTasks(dbAddon.name, npmAddon.tasks ?? [], dbAddon.config, true);
-        //         registerPropertyTasks(dbAddon.name, npmAddon.properties, dbAddon.config, true);
         integration.start(eventBus(device.uniqueId), serviceManager(device.uniqueId), device.config);
       }
     }

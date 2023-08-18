@@ -19,7 +19,8 @@ router.post('/', async (req, res) => {
   user.token = refreshToken;
   await user.save();
 
-  res.json({ accessToken, refreshToken });
+  res.cookie('refreshToken', refreshToken);
+  return res.json({ accessToken, refreshToken });
 });
 
 export default router;
