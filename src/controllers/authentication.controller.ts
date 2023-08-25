@@ -7,6 +7,7 @@ import { createTokens } from '../helpers/token_helper';
 const router = express.Router();
 
 router.post('/', async (req, res) => {
+  console.log(req.cookies['refreshToken']);
   const { username, passphrase } = req.body;
 
   const user = await User.findOneBy({ username });
@@ -19,8 +20,7 @@ router.post('/', async (req, res) => {
   user.token = refreshToken;
   await user.save();
 
-  res.cookie('refreshToken', refreshToken);
-  return res.json({ accessToken, refreshToken });
+  return res.cookie('refreshToken', refreshToken, { httpOnly: true, sameSite: 'none', secure: true }).json({ accessToken, refreshToken });
 });
 
 export default router;

@@ -26,7 +26,7 @@ const port = process.env.SERVER_PORT || 3000;
 const server = express();
 
 // Middelware
-server.use(cors());
+server.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 server.use(express.json());
 server.use(cookieParser());
 
