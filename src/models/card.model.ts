@@ -9,19 +9,22 @@ export class Card extends BaseEntity {
   @Column()
   type: string;
 
+  @Column({ type: 'simple-json' })
+  config: object; // TODO: Define object
+
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => CardConfig, (config) => config.card)
-  configs?: CardConfig[];
+  // @OneToMany(() => CardConfig, (config) => config.card)
+  // configs?: CardConfig[];
 
-  public static from = ({ type, configs }: { type: string; configs?: CardConfig[] }) => {
+  public static from = ({ type, config }: { type: string; config: object }) => {
     const card = new Card();
     card.type = type;
-    card.configs = configs;
+    card.config = config;
     return card;
   };
 }

@@ -1,8 +1,4 @@
-export type AccessToken = {
+export type SignalNodeToken = {
   id: number;
   username: string;
-};
-
-export type RefreshToken = {
-  id: number;
 };

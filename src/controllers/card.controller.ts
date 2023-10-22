@@ -9,19 +9,17 @@ router.get('/', async (req, res) => {
     // relations: { properties: true },
   });
 
-  res.json(cards);
+  return res.json(cards);
 });
 
 router.post('/', async (req, res) => {
-  const { cardId }: { cardId: number } = req.body;
-  const cards = await Card.find({
-    where: { id: cardId }, // TODO: Temporary
-    // relations: { properties: true },
-  });
+  const { type, config }: Card = req.body;
 
-  res.json(cards);
+  console.log(req.body);
+
+  const card = await Card.from({ type, config }).save();
+
+  return res.json(card);
 });
-
-
 
 export default router;
