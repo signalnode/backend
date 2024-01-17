@@ -20,7 +20,7 @@ export class CardConfig extends BaseEntity {
   // @JoinTable()
   // dashboards: Dashboard;
 
-  @ManyToOne(() => Card, (card) => card.configs)
+  @ManyToOne(() => Card, (card) => card.config)
   card: Card;
 
   @ManyToMany(() => Property)

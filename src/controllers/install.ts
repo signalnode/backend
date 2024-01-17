@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
   try {
     await User.create({ username: 'dev', passphrase: bcrypt.hashSync('dev', 10) }).save();
 
-    await Card.from({ type: 'test' });
+    await Card.from({ type: 'test', config: undefined });
 
     console.log('DB successfully initialized');
   } catch (e) {

@@ -1,5 +1,4 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { CardConfig } from './card-config.model';
+import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 export class Card extends BaseEntity {
@@ -21,10 +20,10 @@ export class Card extends BaseEntity {
   // @OneToMany(() => CardConfig, (config) => config.card)
   // configs?: CardConfig[];
 
-  public static from = ({ type, config }: { type: string; config: object }) => {
+  public static from = ({ type, config }: { type: string; config?: object }) => {
     const card = new Card();
     card.type = type;
-    card.config = config;
+    card.config = config ?? {}; // TODO: Should not be optional
     return card;
   };
 }
